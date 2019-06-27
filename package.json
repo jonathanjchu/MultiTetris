@@ -1,0 +1,19 @@
+{
+  "name": "MultiTetris",
+  "version": "0.1.0",
+  "description": "Multiplayer Tetris",
+  "main": "server.js",
+  "scripts": {
+    "test": "jasmine",
+    "start": "nodemon server.js"
+  },
+  "keywords": [
+    "mern"
+  ],
+  "author": "jonathanjchu",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.2.0"
+  }
+}
