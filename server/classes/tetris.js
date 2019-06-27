@@ -30,6 +30,7 @@ class Tetris {
         this.currentTetromino = new Tetromino();
         this.nextTetromino = new Tetromino();
         this.isGameOver = false;
+        this.isWinner = false;
         this.linesRemoved = 0;
         this.score = 0;
     }

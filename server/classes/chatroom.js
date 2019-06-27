@@ -10,7 +10,7 @@ class ChatRoom {
     }
 
     getAllMessage() {
-
+        return this.messages;
     }
 
     getLatestMessage() {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../App.css';
 import SocketIOClient from 'socket.io-client';
 import TetrisBoard from './TetrisBoard';
@@ -7,6 +7,7 @@ import TetrisBoardMini from './TetrisBoardMini';
 import GameOverView from './GameOverView';
 import ScoreBox from './ScoreBox';
 import NextPiece from './NextPiece';
+import ChatRoom from './chat/ChatRoom';
 
 class TetrisGame extends Component {
   constructor(props) {
@@ -19,6 +20,8 @@ class TetrisGame extends Component {
 
       isGameOver: false,
       gameState: null,
+
+      messages: [],
 
       colorKey: [
                   "blank",
@@ -91,10 +94,14 @@ class TetrisGame extends Component {
 
     return (
       <div>
+        <Link to="/" className="nav">Quit</Link>
         {
           this.state.gameState ?
             <div id="game">
               <h2>{this.state.gameState[this.state.id].username}</h2>
+              <div id="chat_bar">
+                <ChatRoom />
+              </div>
               <TetrisBoard board={this.state.gameState[this.state.id].board} colorKey={this.state.colorKey} />
               <div id="side_bar">
                 <NextPiece shape={this.state.gameState[this.state.id].nextShape} colorKey={this.state.colorKey}  />

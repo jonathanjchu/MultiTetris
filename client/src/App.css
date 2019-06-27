@@ -7,12 +7,6 @@
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
-}
-
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -37,6 +31,16 @@
   }
 }
 
+a:link, a:visited {
+  color: white;
+}
+
+.nav {
+  position: fixed;
+  top: 10px;
+  left: 100px;
+}
+
 input[type=submit] {
   height: 28px;
   width: 64px;
@@ -55,6 +59,9 @@ input[type=text] {
 #game {
   display: inline-block;
   min-width: 800px;
+  position: fixed;
+  top: 100px;
+  left: 100px;
 }
 
 #main_board {
@@ -86,7 +93,7 @@ input[type=text] {
   left: 40%;
 }
 
-#side_bar {
+#side_bar, #chat_bar {
   display: inline-block;
   vertical-align: top;
   margin: 12px;

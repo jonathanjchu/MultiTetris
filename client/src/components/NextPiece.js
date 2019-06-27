@@ -20,10 +20,10 @@ class NextPiece extends Component {
         <div className="box">
           {
             showGrid.map((row, i) =>
-              <div className="row">
+              <div className="row" key={i}>
                 {
                   row.map((block, j) =>
-                    <div className={block}></div>
+                    <div className={block} key={j}></div>
                   )
                 }
               </div>

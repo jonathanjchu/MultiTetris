@@ -3,6 +3,7 @@ const ChatRoom = require('../classes/chatroom');
 const Tetris = require('../classes/tetris');
 // const MultiTetris = require('../classes/multitetris');
 
+var chat = new ChatRoom();
 var gameLoopTick = 800;
 var players = {};
 /*
@@ -49,9 +50,17 @@ module.exports = function (server) {
     chatIO.on('connection', socket => {
         let id = parseID(socket.id);
 
-        socket.emit('send_all_messages', {
-
+        socket.emit('get_all_messages', {
+            messages: chat.getAllMessage()
         });
+
+        socket.on('send_new_message', data => {
+            chat.addNewMessage(data.username, data.message);
+
+            socket.broadcast.emit('receive_new_message', {
+                message: chat.getLatestMessage()
+            });
+        })
     });
 
     const tetrisIO = io.of('/tetris');
@@ -84,7 +93,8 @@ module.exports = function (server) {
                             let gameState = getGameState();
 
                             socket.emit('game_state', {
-                                gameState: gameState
+                                gameState: gameState,
+                                id: data.id
                                 // gameState: players
                             });
                         }
@@ -98,7 +108,7 @@ module.exports = function (server) {
         socket.on('key_press', data => {
             if (data.id in players) {
                 if (players[data.id].tetris) {
-                    let linesRemoved = players[data.id].tetris.handleKeyPress(data.keyCode);
+                    let linesRemoved = players[id].tetris.handleKeyPress(data.keyCode);
 
 
                     if (linesRemoved > 1) {
