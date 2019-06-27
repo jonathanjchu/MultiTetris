@@ -64,11 +64,11 @@ input[type=text] {
   vertical-align: top;
 }
 
-#main_board .row {
+#main_board .row, #next_piece .row {
   height: 30px;
 }
 
-#main_board .row .block {
+#main_board .row .block, #next_piece .row .block {
   height: 30px;
   width: 30px;
   display: inline-block;
@@ -98,6 +98,24 @@ input[type=text] {
   border: 1px solid #fff;
 }
 
+#next_piece {
+  height: 200px;
+  width: 180px;
+  border: 1px solid #fff;
+  text-align: center;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+#next_piece .box {
+  display: inline-block;
+  width: 120px;
+  height: 140px;
+  background-color: #000;
+  padding-top: 12px;
+  box-sizing: border-box;
+}
+
 .mini_board {
   height: 180px;
   border: 1px solid #fff;
@@ -120,29 +138,29 @@ input[type=text] {
 }
 
 .purple {
-  background-color: rebeccapurple;
+  background-color: rebeccapurple !important;
 }
 
 .blue {
-  background-color: steelblue;
+  background-color: steelblue !important;
 }
 
 .green {
-  background-color: seagreen;
+  background-color: seagreen !important;
 }
 
 .orange {
-  background-color: darkorange;
+  background-color: darkorange !important;
 }
 
 .red {
-  background-color: maroon;
+  background-color: maroon !important;
 }
 
 .yellow {
-  background-color: palegoldenrod;
+  background-color: palegoldenrod !important;
 }
 
 .gray {
-  background-color: silver;
+  background-color: silver !important;
 }

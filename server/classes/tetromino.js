@@ -17,12 +17,41 @@ class Tetromino {
     getY() {
         return this.posY;
     }
+
+    getHeight() {
+        return this.shape[this.rotation].length;
+    }
+
+    getWidth() {
+        return this.shape[this.rotation][0].length;
+    }
     
     rotate() {
         this.rotation++;
         if (this.rotation >= this.shape.length) {
             this.rotation = 0;
         }
+
+        // if (this.shape == tl && this.rotation === 1) {
+        //     this.posX--;
+        // }
+        // else if (this.shape == tl) {
+        //     this.posX++;
+        // }
+    }
+
+    unrotate() {
+        this.rotation--
+        if (this.rotation < 0) {
+            this.rotation = this.shape.length - 1;
+        }
+
+        // if (this.shape == tl && this.rotation === 1) {
+        //     this.posX++;
+        // }
+        // else if (this.shape == tl) {
+        //     this.posX--;
+        // }
     }
 
     moveRight() {

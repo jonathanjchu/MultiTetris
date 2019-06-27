@@ -1,4 +1,5 @@
 const socketio = require('socket.io');
+const ChatRoom = require('../classes/chatroom');
 const Tetris = require('../classes/tetris');
 // const MultiTetris = require('../classes/multitetris');
 
@@ -44,9 +45,18 @@ module.exports = function (server) {
 
     });
 
+    const chatIO = io.of('/chat');
+    chatIO.on('connection', socket => {
+        let id = parseID(socket.id);
+
+        socket.emit('send_all_messages', {
+
+        });
+    });
+
     const tetrisIO = io.of('/tetris');
     tetrisIO.on('connection', (socket) => {
-        let id = socket.id.substring(socket.id.indexOf('#') + 1);
+        let id = parseID(socket.id);
         console.log(id + " has connected");
 
         socket.on('start_game', data => {
@@ -105,7 +115,7 @@ module.exports = function (server) {
         })
 
         socket.on('leave_game', data => {
-            let id = socket.id.substring(socket.id.indexOf('#') + 1);
+            let id = parseID(socket.id);
             console.log(id + " disconnected");
 
             if (id in players) {
@@ -145,11 +155,16 @@ function getGameState() {
             gameState[key] = {
                 username: players[key].username,
                 board: players[key].tetris.getBoardAndTetromino(),
-                linesRemoved: players[key].tetris.linesRemoved
+                linesRemoved: players[key].tetris.linesRemoved,
+                nextShape: players[key].tetris.getNextTetromino()
             };
         }
     }
 
 
     return gameState;
+}
+
+function parseID(socketid) {
+    return socketid.substring(socketid.indexOf('#') + 1);
 }

@@ -8,7 +8,7 @@ class UserNameForm extends Component {
     super(props);
     
     this.state = {
-      endpoint: "localhost:54810/usernames",
+      endpoint: "192.168.1.81:54810/usernames",
       username: "",
       message: ""
     };

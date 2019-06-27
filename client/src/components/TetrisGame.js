@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
 // import { Link } from 'react-router-dom';
 import '../App.css';
+import SocketIOClient from 'socket.io-client';
 import TetrisBoard from './TetrisBoard';
 import TetrisBoardMini from './TetrisBoardMini';
 import GameOverView from './GameOverView';
 import ScoreBox from './ScoreBox';
-import SocketIOClient from 'socket.io-client';
+import NextPiece from './NextPiece';
 
 class TetrisGame extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      endpoint: "localhost:54810/tetris",
+      endpoint: "192.168.1.81:54810/tetris",
       id: this.props.match.params.id,
       socket: null,
       isGameOver: false,
@@ -40,8 +41,6 @@ class TetrisGame extends Component {
     document.addEventListener('keydown', this.onKeyPress);
 
     socket.on('game_state', data => {
-      // console.log(data.gameState);
-      // console.log("game state");
       this.setState({
         gameState: data.gameState,
         isGameOver: false,
@@ -52,6 +51,7 @@ class TetrisGame extends Component {
       this.setState({
         isGameOver: true
       });
+      document.removeEventListener('keydown', this.onKeyPress);
     })
   }
 
@@ -85,6 +85,7 @@ class TetrisGame extends Component {
               <h2>{this.state.gameState[this.state.id].username}</h2>
               <TetrisBoard board={this.state.gameState[this.state.id].board} />
               <div id="side_bar">
+                <NextPiece shape={this.state.gameState[this.state.id].nextShape} />
                 <ScoreBox lines={this.state.gameState[this.state.id].linesRemoved} />
                 {
                   opponents.map((opp, i) =>

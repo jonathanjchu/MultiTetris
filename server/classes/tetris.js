@@ -28,7 +28,7 @@ class Tetris {
         this.id = id;
         this.username = username;
         this.currentTetromino = new Tetromino();
-        this.nextTetromino = null;
+        this.nextTetromino = new Tetromino();
         this.isGameOver = false;
         this.linesRemoved = 0;
         this.score = 0;
@@ -60,25 +60,63 @@ class Tetris {
         return tempGrid;
     }
 
+    getNextTetromino() {
+        return this.nextTetromino.getShape();
+    }
+
     // isGameOver() {
     //     return this.isGameOver;
     // }
 
-    saveTetromino() {
+    loadNextTetromino() {
         let temp = this.getBoardAndTetromino()
         this.grid = [...temp];
+
+        this.currentTetromino = this.nextTetromino;
+        this.nextTetromino = new Tetromino();
     }
 
     rotateTetromino() {
+
         this.currentTetromino.rotate();
+        let shape = this.currentTetromino.getShape();
+        let x = this.currentTetromino.getX();
+        let y = this.currentTetromino.getY();
+        let width = this.currentTetromino.getWidth();
+        let height = this.currentTetromino.getHeight();
+
+        let canRotate = true;
+        for (let i = y; i < y + height; i++) {
+
+            if (i > this.grid.length) {
+                canRotate = false;
+                break;
+            }
+
+            for (let j = x; j < x + width; j++) {
+                if (j > this.grid[i].length ||
+                    this.grid[i][j] !== 0) {
+                    canRotate = false;
+                    break;
+                }
+            }
+
+            if (!canRotate) {
+                break;
+            }
+        }
+
+        if (!canRotate) {
+            this.currentTetromino.unrotate();
+        }
+
     }
 
     dropTetromino() {
         while (!this.isTetrominoCollideWithBottom()) {
             this.currentTetromino.moveDown();
         }
-        this.saveTetromino();
-        this.currentTetromino = new Tetromino();
+        this.loadNextTetromino();
     }
 
     moveTetrominoDown() {
@@ -156,8 +194,7 @@ class Tetris {
         }
         else {
             // console.log(shapePosY);
-            this.saveTetromino();
-            this.currentTetromino = new Tetromino();
+            this.loadNextTetromino();
 
             // console.log(grid);
         }
