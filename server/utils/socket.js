@@ -35,7 +35,6 @@ module.exports = function (server) {
                     gameLoop: null
                 }
                 socket.emit('confirm_username', {
-                    status: 200,
                     id: id
                 });
             }
@@ -108,8 +107,7 @@ module.exports = function (server) {
         socket.on('key_press', data => {
             if (data.id in players) {
                 if (players[data.id].tetris) {
-                    let linesRemoved = players[id].tetris.handleKeyPress(data.keyCode);
-
+                    let linesRemoved = players[data.id].tetris.handleKeyPress(data.keyCode);
 
                     if (linesRemoved > 1) {
                         addGarbageLines(data.id, linesRemoved);
