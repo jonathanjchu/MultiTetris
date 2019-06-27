@@ -16,8 +16,20 @@ class TetrisGame extends Component {
       endpoint: "192.168.1.81:54810/tetris",
       id: this.props.match.params.id,
       socket: null,
+
       isGameOver: false,
-      gameState: null
+      gameState: null,
+
+      colorKey: [
+                  "blank",
+                  "blue",
+                  "purple",
+                  "green",
+                  "orange",
+                  "red",
+                  "yellow",
+                  "gray"
+                ]
     };
   }
 
@@ -83,19 +95,19 @@ class TetrisGame extends Component {
           this.state.gameState ?
             <div id="game">
               <h2>{this.state.gameState[this.state.id].username}</h2>
-              <TetrisBoard board={this.state.gameState[this.state.id].board} />
+              <TetrisBoard board={this.state.gameState[this.state.id].board} colorKey={this.state.colorKey} />
               <div id="side_bar">
-                <NextPiece shape={this.state.gameState[this.state.id].nextShape} />
+                <NextPiece shape={this.state.gameState[this.state.id].nextShape} colorKey={this.state.colorKey}  />
                 <ScoreBox lines={this.state.gameState[this.state.id].linesRemoved} />
                 {
                   opponents.map((opp, i) =>
-                    <TetrisBoardMini key={i} board={opp.board} username={opp.username} />
+                    <TetrisBoardMini key={i} board={opp.board} username={opp.username} colorKey={this.state.colorKey}  />
                   )
                 }
               </div>
               {
                 this.state.isGameOver ?
-                <GameOverView /> : <></>
+                  <GameOverView /> : <></>
               }
             </div>
             :

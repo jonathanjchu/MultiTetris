@@ -4,17 +4,6 @@ import '../App.css';
 class TetrisBoard extends Component {
 
   render() {
-    let colorKey = [
-      "blank",
-      "blue",
-      "purple",
-      "green",
-      "orange",
-      "red",
-      "yellow",
-      "gray"
-    ];
-
     return (
       <div id="main_board">
         {
@@ -22,7 +11,7 @@ class TetrisBoard extends Component {
             <div className="row" key={i}>
               {
                 row.map((color, j) =>
-                    <div className={`block ${colorKey[color]}`} key={j}></div>
+                    <div className={`block ${this.props.colorKey[color]}`} key={j}></div>
                 )
               }
             </div>

@@ -3,28 +3,16 @@ import '../App.css';
 
 class NextPiece extends Component {
   render() {
-    let colorKey = [
-      "blank",
-      "blue",
-      "purple",
-      "green",
-      "orange",
-      "red",
-      "yellow",
-      "gray"
-    ];
-
     let showGrid = [];
 
     for (let i = 0; i < this.props.shape.length; i++) {
       let row = [];
       for (let j = 0; j < this.props.shape[i].length; j++) {
-        row.push("block " + colorKey[this.props.shape[i][j]]);
+        row.push("block " + this.props.colorKey[this.props.shape[i][j]]);
       }
 
       showGrid.push(row);
     }
-
 
     return (
       <div id="next_piece">
