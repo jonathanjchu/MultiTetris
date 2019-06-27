@@ -41,12 +41,12 @@ class Tetris {
             tempGrid.push([...this.grid[i]]);
         }
 
-        let sy = this.currentTetromino.getY();
-        let sx = this.currentTetromino.getX();
+        let y = this.currentTetromino.getY();
+        let x = this.currentTetromino.getX();
         let shape = this.currentTetromino.getShape();
 
-        for (let i = sy, i2 = 0; i < sy + shape.length && i < this.grid.length; i++ , i2++) {
-            for (let j = sx, j2 = 0; j < sx + shape[i2].length; j++ , j2++) {
+        for (let i = y, i2 = 0; i < y + shape.length && i < this.grid.length; i++ , i2++) {
+            for (let j = x, j2 = 0; j < x + shape[i2].length; j++ , j2++) {
                 if (i2 < shape.length && j2 < shape[i2].length) {
                     // console.log(`i: ${i}, j: ${j}`);
                     tempGrid[i][j] = (shape[i2][j2] || this.grid[i][j]);
@@ -159,18 +159,18 @@ class Tetris {
     }
 
     isTetrominoCollideWithBottom() {
-        let sy = this.currentTetromino.getY();
-        let sx = this.currentTetromino.getX();
+        let y = this.currentTetromino.getY();
+        let x = this.currentTetromino.getX();
         let shape = this.currentTetromino.getShape();
 
-        if (sy + shape.length >= this.grid.length) {
+        if (y + shape.length >= this.grid.length) {
             // reached bottom of grid
             return true;
         }
         else {
             for (let i = shape.length - 1; i >= 0; i--) {
                 for (let j = 0; j < shape[i].length; j++) {
-                    if (shape[i][j] !== 0 && this.grid[sy + i + 1][sx + j] !== 0) {
+                    if (shape[i][j] !== 0 && this.grid[y + i + 1][x + j] !== 0) {
                         return true;
                     }
                 }
@@ -259,11 +259,19 @@ class Tetris {
     }
 
     addGarbageLines(numLines) {
+        this.shiftWholeGridUp(numLines);
 
+        for (let i = this.grid.length - 1; i >= this.grid.length - numLines; i--) {
+            
+        }
     }
 
-    shiftWholeGridUp() {
-
+    shiftWholeGridUp(numRows) {
+        for (let i = 0; i < this.grid.length - numRows; i++) {
+            for (let j = 0; j < this.grid[i].length; j++) {
+                this.grid[i][j] = this.grid[i+numRows][j];
+            }
+        }
     }
 }
 

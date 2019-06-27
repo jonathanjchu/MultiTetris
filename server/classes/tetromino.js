@@ -5,24 +5,24 @@ class Tetromino {
         this.posX = 4;
         this.posY = 0;
     }
-
+    
+    getShape() {
+        return this.shape[this.rotation];
+    }
+    
+    getX() {
+        return this.posX;
+    }
+    
+    getY() {
+        return this.posY;
+    }
+    
     rotate() {
         this.rotation++;
         if (this.rotation >= this.shape.length) {
             this.rotation = 0;
         }
-    }
-
-    getShape() {
-        return this.shape[this.rotation];
-    }
-
-    getX() {
-        return this.posX;
-    }
-
-    getY() {
-        return this.posY;
     }
 
     moveRight() {

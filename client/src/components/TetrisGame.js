@@ -15,6 +15,7 @@ class TetrisGame extends Component {
       endpoint: "localhost:54810/tetris",
       id: this.props.match.params.id,
       socket: null,
+      isGameOver: false,
       gameState: null
     };
   }
@@ -30,9 +31,6 @@ class TetrisGame extends Component {
   componentWillUnmount() {
     this.state.socket.emit('leave_game', { id: this.state.id });
   }
-
-  // socketConnect = () => {
-  // }
 
   startGame = (socket) => {
     socket.emit('start_game', {
@@ -94,6 +92,10 @@ class TetrisGame extends Component {
                   )
                 }
               </div>
+              {
+                this.state.isGameOver ?
+                <GameOverView /> : <></>
+              }
             </div>
             :
             <></>

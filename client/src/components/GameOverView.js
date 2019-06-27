@@ -2,14 +2,9 @@ import React, { Component } from 'react';
 import '../App.css';
 
 class GameOverView extends Component {
-  constructor(props) {
-    super(props);
-    
-  }
-
   render() {
     return (
-      <div>
+      <div id="game_over">
         <h1>
           GAME OVER
         </h1>

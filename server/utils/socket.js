@@ -44,7 +44,7 @@ module.exports = function (server) {
     const tetrisIO = io.of('/tetris');
     tetrisIO.on('connection', (socket) => {
         let id = socket.id.substring(socket.id.indexOf('#') + 1);
-        console.log(id);
+        console.log(id + " has connected");
 
         socket.on('start_game', data => {
             console.log(data.id);
@@ -99,7 +99,6 @@ module.exports = function (server) {
             if (id in players) {
                 delete players[id];
             }
-            // delete players[socket.id];
         });
 
         // console.log(socket.id + " connected");

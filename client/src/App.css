@@ -37,6 +37,21 @@
   }
 }
 
+input[type=submit] {
+  height: 28px;
+  width: 64px;
+  border-radius: 6px;
+  font-size: 18px;
+}
+
+input[type=text] {
+  height: 28px;
+  width: 180px;
+  vertical-align: middle;
+  margin: 3px;
+  border-radius: 3px;
+}
+
 #game {
   display: inline-block;
   min-width: 800px;
@@ -44,6 +59,9 @@
 
 #main_board {
   display: inline-block;
+  box-sizing: border-box;
+  margin: 12px;
+  vertical-align: top;
 }
 
 #main_board .row {
@@ -54,11 +72,24 @@
   height: 30px;
   width: 30px;
   display: inline-block;
+  border: 1px solid #333;
+  box-sizing: border-box;
+}
+
+#game_over {
+  position: absolute;
+  background-color: #000;
+  border: 3px solid goldenrod;
+  color: goldenrod;
+  padding: 24px;
+  top: 40%;
+  left: 40%;
 }
 
 #side_bar {
   display: inline-block;
   vertical-align: top;
+  margin: 12px;
 }
 
 #score_box {
@@ -85,6 +116,7 @@
 
 .blank {
   background-color: #000;
+  border: 0 !important;
 }
 
 .purple {
