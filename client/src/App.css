@@ -37,23 +37,54 @@
   }
 }
 
-#board {
+#game {
   display: inline-block;
+  min-width: 800px;
+}
+
+#main_board {
+  display: inline-block;
+}
+
+#main_board .row {
+  height: 30px;
+}
+
+#main_board .row .block {
+  height: 30px;
+  width: 30px;
+  display: inline-block;
+}
+
+#side_bar {
+  display: inline-block;
+  vertical-align: top;
 }
 
 #score_box {
+  height: 100px;
+  width: 180px;
+  border: 1px solid #fff;
+}
+
+.mini_board {
+  height: 180px;
+  border: 1px solid #fff;
+  margin: 12px;
+}
+
+.mini_board .row {
+  height: 5px;
+}
+
+.mini_board .block {
+  height: 5px;
+  width: 5px;
   display: inline-block;
 }
 
-.row {
-  height: 30px;
-}
-
-.block {
-  height: 30px;
-  width: 30px;
+.blank {
   background-color: #000;
-  display: inline-block;
 }
 
 .purple {

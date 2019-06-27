@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+// import { Link } from 'react-router-dom';
 import '../App.css';
 import TetrisBoard from './TetrisBoard';
+import TetrisBoardMini from './TetrisBoardMini';
 import GameOverView from './GameOverView';
 import ScoreBox from './ScoreBox';
 import SocketIOClient from 'socket.io-client';
@@ -25,6 +27,10 @@ class TetrisGame extends Component {
     });
   }
 
+  componentWillUnmount() {
+    this.state.socket.emit('leave_game', { id: this.state.id });
+  }
+
   // socketConnect = () => {
   // }
 
@@ -37,7 +43,7 @@ class TetrisGame extends Component {
 
     socket.on('game_state', data => {
       // console.log(data.gameState);
-      console.log("game state");
+      // console.log("game state");
       this.setState({
         gameState: data.gameState,
         isGameOver: false,
@@ -59,11 +65,36 @@ class TetrisGame extends Component {
   }
 
   render() {
+
+    let opponents = [];
+
+    try {
+      for (let key in this.state.gameState) {
+        if (this.state.gameState.hasOwnProperty(key) && key !== this.state.id) {
+          opponents.push(this.state.gameState[key]);
+        }
+      }
+    }
+    catch (err) {
+      console.log(err);
+    }
+
     return (
       <div>
         {
           this.state.gameState ?
-            <TetrisBoard board={this.state.gameState[this.state.id].board} />
+            <div id="game">
+              <h2>{this.state.gameState[this.state.id].username}</h2>
+              <TetrisBoard board={this.state.gameState[this.state.id].board} />
+              <div id="side_bar">
+                <ScoreBox lines={this.state.gameState[this.state.id].linesRemoved} />
+                {
+                  opponents.map((opp, i) =>
+                    <TetrisBoardMini key={i} board={opp.board} username={opp.username} />
+                  )
+                }
+              </div>
+            </div>
             :
             <></>
         }

@@ -129,8 +129,8 @@ class Tetris {
                 this.dropTetromino();
                 break;
 
-            case 17:    // LEFT CONTROL
-                break;
+            // case 17:    // LEFT CONTROL
+            //     break;
         }
 
         this.keyPressChecks();
@@ -246,8 +246,8 @@ class Tetris {
         }
     }
 
-    shiftGridDown(pos) {
-        for (let i = pos; i > 0; i--) {
+    shiftGridDown(startRow) {
+        for (let i = startRow; i > 0; i--) {
             for (let j = 0; j < this.grid[i].length; j++) {
                 this.grid[i][j] = this.grid[i - 1][j];
             }
@@ -256,6 +256,14 @@ class Tetris {
         for (let k = 0; k < this.grid[0].length; k++) {
             this.grid[0][k] = 0;
         }
+    }
+
+    addGarbageLines(numLines) {
+
+    }
+
+    shiftWholeGridUp() {
+
     }
 }
 

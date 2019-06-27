@@ -1,8 +1,6 @@
 const socketio = require('socket.io');
 const Tetris = require('../classes/tetris.js');
 
-var gameLoop;
-var tetris;
 var gameLoopTick = 800;
 var players = {};
 /*
@@ -24,7 +22,6 @@ module.exports = function (server) {
                 // console.log(data.username);
 
                 let id = socket.id.substring(socket.id.indexOf('#') + 1);
-
                 console.log(id);
 
                 players[id] = {
@@ -46,51 +43,62 @@ module.exports = function (server) {
 
     const tetrisIO = io.of('/tetris');
     tetrisIO.on('connection', (socket) => {
+        let id = socket.id.substring(socket.id.indexOf('#') + 1);
+        console.log(id);
 
         socket.on('start_game', data => {
             console.log(data.id);
+            if (data.id in players) {
 
-            players[data.id].tetris = new Tetris();
+                players[data.id].tetris = new Tetris();
 
-            players[data.id].gameLoop = setInterval(() => {
+                players[data.id].gameLoop = setInterval(() => {
 
-                // console.log(players);
+                    // console.log(players);
 
-                if (players[data.id]) { // TODO: figure out where extra socket connections are coming from
-                    if (players[data.id].tetris.isGameOver) {
-                        socket.emit('game_over', { isGameOver: true });
-                        clearInterval(players[data.id].gameLoop);
+                    if (players[data.id]) { // TODO: figure out where extra socket connections are coming from
+                        if (players[data.id].tetris.isGameOver) {
+                            socket.emit('game_over', { isGameOver: true });
+                            clearInterval(players[data.id].gameLoop);
+                        }
+                        else {
+                            players[data.id].tetris.gameLoop();
+
+                            let gameState = getGameState();
+
+                            socket.emit('game_state', {
+                                gameState: gameState
+                                // gameState: players
+                            });
+                        }
                     }
-                    else {
-                        players[data.id].tetris.gameLoop();
 
-                        let gameState = getGameState();
+                }, gameLoopTick);
 
-                        socket.emit('game_state', {
-                            gameState: gameState
-                        });
-                    }
-                }
-
-            }, gameLoopTick);
-
-
+            }
         });
 
         socket.on('key_press', data => {
-            if (players[data.id].tetris) {
-                players[data.id].tetris.handleKeyPress(data.keyCode);
+            if (data.id in players) {
+                if (players[data.id].tetris) {
+                    players[data.id].tetris.handleKeyPress(data.keyCode);
 
-                let gameState = getGameState();
+                    let gameState = getGameState();
 
-                socket.emit('game_state', {
-                    gameState: gameState
-                });
+                    socket.emit('game_state', {
+                        gameState: gameState
+                    });
+                }
             }
         })
 
-        socket.on('disconnect', data => {
+        socket.on('leave_game', data => {
+            let id = socket.id.substring(socket.id.indexOf('#') + 1);
             console.log(socket.id + " disconnected");
+
+            if (id in players) {
+                delete players[id];
+            }
             // delete players[socket.id];
         });
 

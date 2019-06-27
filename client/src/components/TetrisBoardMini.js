@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import '../App.css';
 
-class TetrisBoard extends Component {
+class TetrisBoardMini extends Component {
 
   render() {
     let colorKey = [
@@ -15,14 +15,17 @@ class TetrisBoard extends Component {
       "gray"
     ];
 
+    console.log(this.props.board);
+
     return (
-      <div id="main_board">
+      <div className="mini_board">
+        <h5>{this.props.username}</h5>
         {
           this.props.board.map((row, i) =>
             <div className="row" key={i}>
               {
                 row.map((color, j) =>
-                    <div className={`block ${colorKey[color]}`} key={j}></div>
+                  <div className={`block ${colorKey[color]}`} key={j}></div>
                 )
               }
             </div>
@@ -33,4 +36,4 @@ class TetrisBoard extends Component {
   }
 }
 
-export default TetrisBoard;
+export default TetrisBoardMini;
