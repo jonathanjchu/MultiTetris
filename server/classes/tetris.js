@@ -1,7 +1,7 @@
 const Tetromino = require("./tetromino");
 
 class Tetris {
-    constructor() {
+    constructor(id, username) {
         this.grid = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -25,7 +25,10 @@ class Tetris {
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ];
 
+        this.id = id;
+        this.username = username;
         this.currentTetromino = new Tetromino();
+        this.nextTetromino = null;
         this.isGameOver = false;
         this.linesRemoved = 0;
         this.score = 0;
@@ -97,12 +100,14 @@ class Tetris {
     }
 
     gameLoop() {
-        this.gameLoopChecks();
+        let linesRemoved = this.gameLoopChecks();
         this.fall();
+
+        return linesRemoved;
     }
 
     gameLoopChecks() {
-        this.removeLines();
+        return this.removeLines();
     }
 
     handleKeyPress(keyCode) {
@@ -133,11 +138,11 @@ class Tetris {
             //     break;
         }
 
-        this.keyPressChecks();
+        return this.keyPressChecks();
     }
 
     keyPressChecks() {
-        this.removeLines();
+        return this.removeLines();
     }
 
     fall() {
@@ -244,6 +249,8 @@ class Tetris {
         if (lineCount > 0) {
             console.log(`Removed ${lineCount} line(s)`);
         }
+
+        return lineCount;
     }
 
     shiftGridDown(startRow) {
@@ -262,7 +269,14 @@ class Tetris {
         this.shiftWholeGridUp(numLines);
 
         for (let i = this.grid.length - 1; i >= this.grid.length - numLines; i--) {
+            for (let j = 0; j < this.grid[i].length; j++) {
+                this.grid[i][j] = 1;
+            }
+            let rndArr = this.randomNumbers(0, this.grid[i].length, numLines+1);
             
+            for (let k=0; k<rndArr.length; k++) {
+                this.grid[i][rndArr[k]] = 0;
+            }
         }
     }
 
@@ -273,7 +287,19 @@ class Tetris {
             }
         }
     }
+
+    randomNumbers(min, max, count) {
+        let rndArr = [];
+
+        for (let i = 0; i < count; i++) {
+            rndArr.push(Math.floor(Math.random() * max) + min);
+        }
+
+        return rndArr;
+    }
 }
+
+
 
 
 module.exports = Tetris;

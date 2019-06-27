@@ -1,5 +1,6 @@
 const socketio = require('socket.io');
-const Tetris = require('../classes/tetris.js');
+const Tetris = require('../classes/tetris');
+// const MultiTetris = require('../classes/multitetris');
 
 var gameLoopTick = 800;
 var players = {};
@@ -14,6 +15,8 @@ key: socket.id
 
 module.exports = function (server) {
     const io = socketio(server);
+
+    // var tetrisGame = new MultiTetris();
 
     const usernameIO = io.of('/usernames');
     usernameIO.on('connection', socket => {
@@ -62,7 +65,11 @@ module.exports = function (server) {
                             clearInterval(players[data.id].gameLoop);
                         }
                         else {
-                            players[data.id].tetris.gameLoop();
+                            let linesRemoved = players[data.id].tetris.gameLoop();
+
+                            if (linesRemoved > 1) {
+                                addGarbageLines(data.id, linesRemoved);
+                            }
 
                             let gameState = getGameState();
 
@@ -81,7 +88,12 @@ module.exports = function (server) {
         socket.on('key_press', data => {
             if (data.id in players) {
                 if (players[data.id].tetris) {
-                    players[data.id].tetris.handleKeyPress(data.keyCode);
+                    let linesRemoved = players[data.id].tetris.handleKeyPress(data.keyCode);
+
+
+                    if (linesRemoved > 1) {
+                        addGarbageLines(data.id, linesRemoved);
+                    }
 
                     let gameState = getGameState();
 
@@ -94,22 +106,22 @@ module.exports = function (server) {
 
         socket.on('leave_game', data => {
             let id = socket.id.substring(socket.id.indexOf('#') + 1);
-            console.log(socket.id + " disconnected");
+            console.log(id + " disconnected");
 
             if (id in players) {
                 delete players[id];
             }
         });
 
-        // console.log(socket.id + " connected");
-        // players[socket.id] = {
-        //     username: "",
-        //     ip_address: "",
-        //     tetris: tetris,
-        //     gameLoop: gameLoop
-        // };
-
     });
+}
+
+function addGarbageLines(id, linesRemoved) {
+    for (let key in players) {
+        if (players.hasOwnProperty(key) && key !== id) {
+            players[key].tetris.addGarbageLines(linesRemoved);
+        }
+    }
 }
 
 function isUserExist(username) {
@@ -138,7 +150,6 @@ function getGameState() {
         }
     }
 
-    // console.log(gameState);
 
     return gameState;
 }
