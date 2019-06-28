@@ -8,7 +8,8 @@
 }
 
 .App-header {
-  background-color: #242429;
+  /* background-color: #242429; */
+  background-color: #111;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -60,7 +61,7 @@ input[type=text] {
   display: inline-block;
   width: 1000px;
   position: fixed;
-  top: 30px;
+  top: 50px;
   left: 40px;
 }
 
@@ -89,7 +90,7 @@ input[type=text] {
   box-sizing: border-box;
 }
 
-#game_over {
+#game_over, .countdown {
   position: absolute;
   background-color: #000;
   border: 3px solid goldenrod;
@@ -97,7 +98,8 @@ input[type=text] {
   padding: 24px;
   top: 30%;
   left: 30%;
-  font: normal 40px 'Courier New', Courier, monospace
+  font: normal 40px 'Courier New', Courier, monospace;
+  text-align: center;
 }
 
 #right_bar {
@@ -106,6 +108,7 @@ input[type=text] {
   margin: 12px;
   overflow: auto;
   width: 360px;
+  min-height: 300px;
 }
 
 #score_box {
@@ -221,7 +224,7 @@ input[type=text] {
   vertical-align: top;
   /* margin: 12px; */
   overflow: auto;
-  background-color: #494e57;
+  background-color: #353638;
   box-sizing: border-box;
   padding: 3px;
 }
@@ -243,4 +246,43 @@ input[type=text] {
 .chat_user {
   font-weight: bold;
   margin-right: 4px;
+}
+
+.lobby_row {
+  background-color: #000;
+  height: 36px;
+  padding: 3px;
+  box-sizing: border-box;
+}
+
+.lobby_player {
+  font: 22px "courier new", courier, monospace;
+  display: inline-block;
+  vertical-align: top;
+  margin: 2px;
+}
+
+.lobby_row button {
+  float: right;
+  height: 26px;
+  border: 1px solid #fff;
+  background-color: #000;
+  color: #fff;
+  width: 60px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.lobby_status {
+  float: right;
+  font: normal 14px verdana, arial, sans-serif;
+  padding-top: 4px;
+}
+
+.ready {
+  border: 2px solid lime;
+}
+
+.not_ready {
+  border: 2px solid red;
 }

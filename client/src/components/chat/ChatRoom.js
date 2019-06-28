@@ -21,7 +21,6 @@ class ChatRoom extends Component {
     let socket = SocketIOClient(this.state.endpoint);
 
     socket.on('get_all_messages', data => {
-      console.log("all: " + data.messages);
       this.setState({
         messages: data.messages
       });
@@ -45,6 +44,11 @@ class ChatRoom extends Component {
     this.setState({
       socket: socket
     });
+  }
+
+  componentWillUnmount() {
+    this.state.socket.off();
+    this.state.socket.disconnect();
   }
 
   onNewMessage = (msg) => {
@@ -80,7 +84,6 @@ class ChatRoom extends Component {
               <ChatItem key={i} username={msg.username} message={msg.message} isMyUsername={false} />
             }
             </>
-              
             )
           }
         </div>

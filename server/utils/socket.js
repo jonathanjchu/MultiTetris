@@ -1,9 +1,11 @@
 const socketio = require('socket.io');
 const ChatRoom = require('../classes/chatroom');
 const Tetris = require('../classes/tetris');
+const Lobby = require('../classes/lobby');
 // const MultiTetris = require('../classes/multitetris');
 
 var chat = new ChatRoom();
+var lobby = new Lobby();
 var gameLoopTick = 800;
 var players = {};
 /*
@@ -23,23 +25,26 @@ module.exports = function (server) {
     const usernameIO = io.of('/usernames');
     usernameIO.on('connection', socket => {
         socket.on('set_username', data => {
-            if (!isUserExist(data.username)) {
-                // console.log(data.username);
 
-                let id = socket.id.substring(socket.id.indexOf('#') + 1);
-                console.log(id);
-
-                players[id] = {
-                    username: data.username,
-                    tetris: null,
-                    gameLoop: null
-                }
-                socket.emit('confirm_username', {
-                    id: id
-                });
+            if (lobby.isCountingDown) {
+                socket.emit('user_too_late');
             }
             else {
-                socket.emit('username_used');
+                if (!isUserExist(data.username)) {
+                    // console.log(data.username);
+
+                    let id = socket.id.substring(socket.id.indexOf('#') + 1);
+                    console.log(id);
+
+                    lobby.addPlayer(id, data.username);
+
+                    socket.emit('confirm_username', {
+                        id: id
+                    });
+                }
+                else {
+                    socket.emit('username_used');
+                }
             }
         });
 
@@ -52,7 +57,7 @@ module.exports = function (server) {
         let messages = chat.getAllMessages();
         let msgArr = [];
 
-        for (let i=0; i<messages.length; i++) {
+        for (let i = 0; i < messages.length; i++) {
             msgArr.push({
                 username: messages[i].username,
                 message: messages[i].message,
@@ -72,10 +77,62 @@ module.exports = function (server) {
             console.log(lastMsg);
 
             socket.broadcast.emit('receive_new_message', {
-                    username: lastMsg.username,
-                    message: lastMsg.message,
-                    timestamp: lastMsg.timestamp
+                username: lastMsg.username,
+                message: lastMsg.message,
+                timestamp: lastMsg.timestamp
             });
+        });
+    });
+
+    const lobbyIO = io.of('/lobby');
+    lobbyIO.on('connection', socket => {
+        let id = parseID(socket.id);
+
+        socket.on('joining_lobby', data => {
+            let username = lobby.getUsernameByID(data.id);
+
+            // check username found
+            if (username) {
+                socket.emit('confirm_join', {
+                    username: username,
+                    allUsers: lobby.getAllPlayers()
+                });
+
+                socket.broadcast.emit('player_joined', {
+                    newuser: username,
+                });
+            }
+        });
+
+        socket.on('player_set_ready', data => {
+            lobby.setToReady(data.id);
+
+            socket.broadcast.emit('player_ready', {
+                username: data.username,
+                ready: data.ready
+            });
+
+            if (lobby.areAllPlayersReady()) {
+                lobby.isCountingDown = true;
+
+                socket.emit('lobby_countdown', {
+                    countDown: 5
+                });
+
+                socket.broadcast.emit('lobby_countdown', {
+                    countDown: 5
+                });
+
+                setTimeout(() => {
+                    for (let i=0; i<lobby.waitingPlayers.length; i++) {
+                        players[lobby.waitingPlayers[i].id] = {
+                            username: lobby.waitingPlayers[i].username,
+                            tetris: null,
+                            gameLoop: null
+                        };
+                    }
+                }, 5000);
+            }
         });
     });
 
@@ -139,7 +196,7 @@ module.exports = function (server) {
             }
         })
 
-        socket.on('leave_game', data => {
+        socket.on('disconnect', data => {
             let id = parseID(socket.id);
             console.log(id + " disconnected");
 
@@ -193,3 +250,4 @@ function getGameState() {
 function parseID(socketid) {
     return socketid.substring(socketid.indexOf('#') + 1);
 }
+

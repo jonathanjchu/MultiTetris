@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import '../App.css';
+import '../../App.css';
 import SocketIOClient from 'socket.io-client';
 // import { Link, Route, BrowserRouter } from 'react-router-dom';
 
@@ -12,8 +12,14 @@ class UserNameForm extends Component {
       endpoint: "localhost:54810/usernames",
       username: "",
       message: "",
-      canSubmit: false
+      canSubmit: false,
+      socket: null
     };
+  }
+
+  componentWillUnmount() {
+    this.state.socket.off();
+    this.state.socket.disconnect();
   }
 
   onUserNameChange = (e) => {
@@ -46,7 +52,7 @@ class UserNameForm extends Component {
           this.setState({
             message: ""
           });
-          this.props.history.push(`/tetris/${data.id}`);
+          this.props.history.push(`/lobby/${data.id}`);
       });
 
       socket.on('username_used', data => {
@@ -56,7 +62,15 @@ class UserNameForm extends Component {
         });
       });
 
-      // this.props.onUserNameSubmit(this.state.username);
+      socket.on('user_too_late', data => {
+        this.setState({
+          message: "Game already started"
+        });
+      });
+
+      this.setState({
+        socket: socket
+      });
   }
 
   render() {

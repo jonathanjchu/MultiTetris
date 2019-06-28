@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import '../App.css';
+import '../../App.css';
 import SocketIOClient from 'socket.io-client';
 import TetrisBoard from './TetrisBoard';
 import TetrisBoardMini from './TetrisBoardMini';
 import GameOverView from './GameOverView';
 import ScoreBox from './ScoreBox';
 import NextPiece from './NextPiece';
-import ChatRoom from './chat/ChatRoom';
+import ChatRoom from '../chat/ChatRoom';
 
 class TetrisGame extends Component {
   constructor(props) {
@@ -46,7 +46,8 @@ class TetrisGame extends Component {
   }
 
   componentWillUnmount() {
-    this.state.socket.emit('leave_game', { id: this.state.id });
+    this.state.socket.off();
+    this.state.socket.disconnect();
   }
 
   startGame = (socket) => {

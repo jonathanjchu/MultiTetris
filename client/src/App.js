@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import './App.css';
 import {  Route, Switch, BrowserRouter } from 'react-router-dom';
 // import SocketIOClient from 'socket.io-client';
-import TetrisGame from './components/TetrisGame';
-
-import UserNameForm from './components/UserNameForm';
+import TetrisGame from './components/tetris/TetrisGame';
+import Lobby from './components/lobby/Lobby';
+import UserNameForm from './components/lobby/UserNameForm';
 
 class App extends Component {
   onKeyPress = (e) => {
@@ -18,6 +18,7 @@ class App extends Component {
           <BrowserRouter>
             <Switch>
               <Route exact path="/" component={UserNameForm} />
+              <Route path="/lobby/:id" component={Lobby} />
               <Route path="/tetris/:id" component={TetrisGame} />
             </Switch>
           </BrowserRouter>
