@@ -14,8 +14,9 @@ class TetrisGame extends Component {
     super(props);
 
     this.state = {
-      // endpoint: "192.168.1.81:54810/tetris",
-      endpoint: "localhost:54810/tetris",
+      endpoint: "192.168.1.81:54810/tetris",
+      // endpoint: "192.168.1.164:54810/tetris",
+      // endpoint: "localhost:54810/tetris",
       id: this.props.match.params.id,
       socket: null,
 
@@ -46,6 +47,7 @@ class TetrisGame extends Component {
   }
 
   componentWillUnmount() {
+    this.state.socket.emit('leave_game', { id: this.state.id });
     this.state.socket.off();
     this.state.socket.disconnect();
   }
@@ -130,7 +132,9 @@ class TetrisGame extends Component {
               }
             </div>
             :
-            <></>
+            <h1>
+              Loading...
+            </h1>
         }
       </div>
     );

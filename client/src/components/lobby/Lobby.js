@@ -11,8 +11,9 @@ class Lobby extends Component {
     super(props);
 
     this.state = {
-      // endpoint: "192.168.1.81:54810/lobby",
-      endpoint: "localhost:54810/lobby",
+      endpoint: "192.168.1.81:54810/lobby",
+      // endpoint: "192.168.1.164:54810/lobby",
+      // endpoint: "localhost:54810/lobby",
       socket: null,
       id: this.props.match.params.id,
       username: "",
@@ -79,6 +80,11 @@ class Lobby extends Component {
     });
   }
 
+  componentWillUnmount() {
+    this.state.socket.off();
+    this.state.socket.disconnect();
+  }
+
   findUserAndSetToReady = (username) => {
     let users = [...this.state.users];
 
@@ -112,7 +118,7 @@ class Lobby extends Component {
   render() {
     return (
       <div id="game">
-        <h2>Lobby</h2>
+        <h2>Tetris</h2>
         <div id="left_bar">
           <div id="chat_bar">
             {
@@ -121,7 +127,6 @@ class Lobby extends Component {
                 :
                 <p>Loading...</p>
             }
-
           </div>
         </div>
         <div id="right_bar">
@@ -136,6 +141,7 @@ class Lobby extends Component {
               />
             )
           }
+          <p id="instructions">Press "Ready?" when ready to play</p>
         </div>
         {
           this.state.isStarting ?

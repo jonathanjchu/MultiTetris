@@ -70,7 +70,6 @@ module.exports = function (server) {
         });
 
         socket.on('send_new_message', data => {
-            console.log(data);
             chat.addNewMessage(data.username, data.message.substring(0, 64));
 
             let lastMsg = chat.getLatestMessage();
@@ -87,6 +86,7 @@ module.exports = function (server) {
     const lobbyIO = io.of('/lobby');
     lobbyIO.on('connection', socket => {
         let id = parseID(socket.id);
+        console.log(id + " has connected");
 
         socket.on('joining_lobby', data => {
             let username = lobby.getUsernameByID(data.id);
@@ -131,7 +131,9 @@ module.exports = function (server) {
                             gameLoop: null
                         };
                     }
-                }, 5000);
+
+                    lobby = new Lobby();
+                }, 4900);
             }
         });
     });
@@ -151,7 +153,7 @@ module.exports = function (server) {
 
                     // console.log(players);
 
-                    if (players[data.id]) { // TODO: figure out where extra socket connections are coming from
+                    if (players[data.id]) {
                         if (players[data.id].tetris.isGameOver) {
                             socket.emit('game_over', { isGameOver: true });
                             clearInterval(players[data.id].gameLoop);
@@ -168,13 +170,11 @@ module.exports = function (server) {
                             socket.emit('game_state', {
                                 gameState: gameState,
                                 id: data.id
-                                // gameState: players
                             });
                         }
                     }
 
                 }, gameLoopTick);
-
             }
         });
 
@@ -196,22 +196,36 @@ module.exports = function (server) {
             }
         })
 
+        socket.on('leave_game', data => { 
+            let id = data.id;
+
+            if (id in players) {
+                clearInterval(players[id].gameLoop);
+                delete players[id];
+                console.log(id + " deleted");
+            }
+        });
+
         socket.on('disconnect', data => {
             let id = parseID(socket.id);
             console.log(id + " disconnected");
-
-            if (id in players) {
-                delete players[id];
-            }
         });
 
     });
 }
 
 function addGarbageLines(id, linesRemoved) {
+    let numLines = 0;
+    if (linesRemoved === 4) {
+        numLines = 4;
+    }
+    else {
+        numLines = linesRemoved - 1;
+    }
+
     for (let key in players) {
         if (players.hasOwnProperty(key) && key !== id) {
-            players[key].tetris.addGarbageLines(linesRemoved);
+            players[key].tetris.addGarbageLines(numLines);
         }
     }
 }
@@ -225,7 +239,6 @@ function isUserExist(username) {
     }
     return false;
 }
-
 
 function getGameState() {
     let gameState = {};
@@ -242,7 +255,6 @@ function getGameState() {
             };
         }
     }
-
 
     return gameState;
 }

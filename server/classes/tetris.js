@@ -119,7 +119,6 @@ class Tetris {
         }
 
         if (this.currentTetromino.getY() === 0) {
-            console.log("GAME OVER");
             this.isGameOver = true;
         }
         else {
@@ -197,7 +196,6 @@ class Tetris {
         }
         else if (this.currentTetromino.getY() === 0) {
             // game over
-            console.log("GAME OVER");
             this.isGameOver = true;
         }
         else {
