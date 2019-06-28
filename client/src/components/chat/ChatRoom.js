@@ -10,7 +10,8 @@ class ChatRoom extends Component {
 
     this.state = {
       // endpoint: "192.168.1.81:54810/chat",
-      endpoint: "localhost:54810/chat",
+      // endpoint: "localhost:54810/chat",
+      endpoint: "172.31.39.165:54810/chat",
       socket: null,
       messages: [],
       username: this.props.username
