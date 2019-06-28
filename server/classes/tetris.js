@@ -321,6 +321,11 @@ class Tetris {
                 this.grid[i][rndArr[k]] = 0;
             }
         }
+
+        this.currentTetromino.posY -= numLines;
+        if (this.currentTetromino.posY < 0) {
+            this.currentTetromino.posY = 0;
+        }
     }
 
     shiftWholeGridUp(numRows) {

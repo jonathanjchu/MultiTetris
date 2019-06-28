@@ -26,7 +26,7 @@ module.exports = function (server) {
     usernameIO.on('connection', socket => {
         socket.on('set_username', data => {
 
-            if (lobby.isCountingDown) {
+            if (lobby.isCountingDown || gameStillGoingOn()) {
                 socket.emit('user_too_late');
             }
             else {
@@ -47,7 +47,6 @@ module.exports = function (server) {
                 }
             }
         });
-
     });
 
     const chatIO = io.of('/chat');
@@ -86,7 +85,7 @@ module.exports = function (server) {
     const lobbyIO = io.of('/lobby');
     lobbyIO.on('connection', socket => {
         let id = parseID(socket.id);
-        console.log(id + " has connected");
+        console.log(id + " has entered the lobby");
 
         socket.on('joining_lobby', data => {
             let username = lobby.getUsernameByID(data.id);
@@ -141,7 +140,7 @@ module.exports = function (server) {
     const tetrisIO = io.of('/tetris');
     tetrisIO.on('connection', (socket) => {
         let id = parseID(socket.id);
-        console.log(id + " has connected");
+        console.log(id + " connected");
 
         socket.on('start_game', data => {
             console.log(data.id);
@@ -194,7 +193,7 @@ module.exports = function (server) {
                     });
                 }
             }
-        })
+        });
 
         socket.on('leave_game', data => { 
             let id = data.id;
@@ -202,7 +201,7 @@ module.exports = function (server) {
             if (id in players) {
                 clearInterval(players[id].gameLoop);
                 delete players[id];
-                console.log(id + " deleted");
+                console.log(id + " has left the game");
             }
         });
 
@@ -263,3 +262,18 @@ function parseID(socketid) {
     return socketid.substring(socketid.indexOf('#') + 1);
 }
 
+function gameStillGoingOn() {
+    let numActivePlayers = 0;
+
+    for (let key in players) {
+        if (players.hasOwnProperty(key) && !players[key].tetris.isGameOver) {
+            numActivePlayers++;
+
+            if (numActivePlayers > 1) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
