@@ -286,3 +286,16 @@ input[type=text] {
 .not_ready {
   border: 2px solid red;
 }
+
+.countdown {
+  position: absolute;
+  background-color: #000;
+  border: 3px solid rgb(173, 255, 157);
+  color: rgb(173, 255, 157);
+  padding: 24px;
+  top: 30%;
+  left: 30%;
+  font: normal 36px 'Courier New', Courier, monospace;
+  text-align: center;
+  width: 400px;
+}

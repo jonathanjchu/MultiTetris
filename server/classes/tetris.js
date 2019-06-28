@@ -119,7 +119,6 @@ class Tetris {
         }
 
         if (this.currentTetromino.getY() === 0) {
-            console.log("GAME OVER");
             this.isGameOver = true;
         }
         else {
@@ -197,7 +196,6 @@ class Tetris {
         }
         else if (this.currentTetromino.getY() === 0) {
             // game over
-            console.log("GAME OVER");
             this.isGameOver = true;
         }
         else {
@@ -322,6 +320,11 @@ class Tetris {
             for (let k=0; k<rndArr.length; k++) {
                 this.grid[i][rndArr[k]] = 0;
             }
+        }
+
+        this.currentTetromino.posY -= numLines;
+        if (this.currentTetromino.posY < 0) {
+            this.currentTetromino.posY = 0;
         }
     }
 

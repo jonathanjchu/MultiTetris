@@ -62,6 +62,23 @@ class MultiTetris {
         return gameState;
     }
 
+    isGameStillGoingOn() {
+        let isAnyPlayerActive = false;
+
+        for (let key in this.players) {
+            if (this.players.hasOwnProperty(key) && !this.players[key].isGameOver) {
+                if (!isAnyPlayerActive) {
+                    isAnyPlayerActive = true;
+                }
+                else {
+                    return true;
+                }
+            }
+        }
+
+        return true;
+    }
+
 }
 
 module.exports = MultiTetris;
