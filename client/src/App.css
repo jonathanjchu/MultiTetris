@@ -4,7 +4,7 @@
 }
 
 .App {
-  text-align: center;
+  text-align: left;
 }
 
 .App-header {
@@ -58,10 +58,10 @@ input[type=text] {
 
 #game {
   display: inline-block;
-  min-width: 800px;
+  width: 1000px;
   position: fixed;
   top: 100px;
-  left: 100px;
+  left: 40px;
 }
 
 #main_board {
@@ -93,10 +93,12 @@ input[type=text] {
   left: 40%;
 }
 
-#side_bar, #chat_bar {
+#side_bar {
   display: inline-block;
   vertical-align: top;
   margin: 12px;
+  overflow: auto;
+  width: 360px;
 }
 
 #score_box {
@@ -124,9 +126,12 @@ input[type=text] {
 }
 
 .mini_board {
-  height: 180px;
+  height: 160px;
   border: 1px solid #fff;
-  margin: 12px;
+  margin: 3px;
+  display: inline-block;
+  text-align: center;
+  width: 66px;
 }
 
 .mini_board .row {
@@ -137,6 +142,11 @@ input[type=text] {
   height: 5px;
   width: 5px;
   display: inline-block;
+}
+
+.mini_board h5 {
+  font-weight: 100;
+  font-size: 16px;
 }
 
 .blank {
@@ -170,4 +180,27 @@ input[type=text] {
 
 .gray {
   background-color: silver !important;
+}
+
+#chat_bar {
+  width: 260px;
+  display: inline-block;
+  vertical-align: top;
+  margin: 12px;
+  overflow: auto;
+}
+
+#chatroom {
+  overflow: auto;
+  height: 400px;
+}
+
+.chat_row {
+  font: 14px arial, sans-serif;
+  text-align: left;
+}
+
+.chat_user {
+  font-weight: bold;
+  margin-right: 4px;
 }

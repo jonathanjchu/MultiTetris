@@ -9,7 +9,7 @@ class ChatRoom {
         this.messages.push(new Message(username, message));
     }
 
-    getAllMessage() {
+    getAllMessages() {
         return this.messages;
     }
 

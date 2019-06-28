@@ -10,13 +10,27 @@ class UserNameForm extends Component {
     this.state = {
       endpoint: "192.168.1.81:54810/usernames",
       username: "",
-      message: ""
+      message: "",
+      canSubmit: false
     };
   }
 
   onUserNameChange = (e) => {
+    let canSubmit = this.state.canSubmit;
+    let message = "";
+
+    if (e.target.value.length > 0 && e.target.value.length < 16) {
+      canSubmit = true;
+      message = "";
+    }
+    else {
+      message = "Username must be less than 16 characters";
+    }
+
     this.setState({
-        username: e.target.value
+        username: e.target.value,
+        canSubmit: canSubmit,
+        message: message
     });
   }
 
@@ -53,7 +67,7 @@ class UserNameForm extends Component {
             <input type="text"
                 onChange={this.onUserNameChange}
                 value={this.state.username} />
-            <input type="submit" value="Enter" />
+            <input type="submit" value="Enter" disabled={!this.state.canSubmit} />
         </form>
       </div>
     );

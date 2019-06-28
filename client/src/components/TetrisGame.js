@@ -100,7 +100,7 @@ class TetrisGame extends Component {
             <div id="game">
               <h2>{this.state.gameState[this.state.id].username}</h2>
               <div id="chat_bar">
-                <ChatRoom />
+                <ChatRoom username={this.state.gameState[this.state.id].username} />
               </div>
               <TetrisBoard board={this.state.gameState[this.state.id].board} colorKey={this.state.colorKey} />
               <div id="side_bar">

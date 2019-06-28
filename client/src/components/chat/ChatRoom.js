@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import '../../App.css';
 import SocketIOClient from 'socket.io-client';
 import ChatForm from './ChatForm';
+import ChatItem from './ChatItem';
 
 class ChatRoom extends Component {
   constructor(props) {
@@ -10,7 +11,8 @@ class ChatRoom extends Component {
     this.state = {
       endpoint: "192.168.1.81:54810/chat",
       socket: null,
-      messages: []
+      messages: [],
+      username: this.props.username
     };
   }
 
@@ -18,9 +20,24 @@ class ChatRoom extends Component {
     let socket = SocketIOClient(this.state.endpoint);
 
     socket.on('get_all_messages', data => {
-      console.log(data.messages);
+      console.log("all: " + data.messages);
       this.setState({
         messages: data.messages
+      });
+    });
+
+    socket.on('receive_new_message', data => {
+      let messages = [...this.state.messages];
+
+      messages.push({
+        username: data.username,
+        message: data.message,
+        timestamp: data.timestamp
+      });
+
+
+      this.setState({
+        messages: messages
       });
     });
 
@@ -31,7 +48,19 @@ class ChatRoom extends Component {
 
   onNewMessage = (msg) => {
     this.state.socket.emit('send_new_message', {
+      username: this.state.username,
       message: msg
+    });
+
+    let messages = [...this.state.messages];
+    messages.push({
+      username: this.state.username,
+      message: msg,
+      timestamp: Date.now(),
+    });
+
+    this.setState({
+      messages: messages
     });
   }
 
@@ -41,7 +70,7 @@ class ChatRoom extends Component {
         <div id="chatroom">
           {
             this.state.messages.map((msg, i) => 
-              <div className="message" key={i}>{msg}</div>
+              <ChatItem username={msg.username} message={msg.message} key={i} />
             )
           }
         </div>

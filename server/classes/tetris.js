@@ -117,7 +117,14 @@ class Tetris {
         while (!this.isTetrominoCollideWithBottom()) {
             this.currentTetromino.moveDown();
         }
-        this.loadNextTetromino();
+
+        if (this.currentTetromino.getY() === 0) {
+            console.log("GAME OVER");
+            this.isGameOver = true;
+        }
+        else {
+            this.loadNextTetromino();
+        }
     }
 
     moveTetrominoDown() {

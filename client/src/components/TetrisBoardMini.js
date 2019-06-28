@@ -4,8 +4,6 @@ import '../App.css';
 class TetrisBoardMini extends Component {
 
   render() {
-    console.log(this.props.board);
-
     return (
       <div className="mini_board">
         <h5>{this.props.username}</h5>

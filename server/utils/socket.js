@@ -49,17 +49,34 @@ module.exports = function (server) {
     chatIO.on('connection', socket => {
         let id = parseID(socket.id);
 
+        let messages = chat.getAllMessages();
+        let msgArr = [];
+
+        for (let i=0; i<messages.length; i++) {
+            msgArr.push({
+                username: messages[i].username,
+                message: messages[i].message,
+                timestamp: messages[i].timestamp
+            });
+        }
+
         socket.emit('get_all_messages', {
-            messages: chat.getAllMessage()
+            messages: msgArr
         });
 
         socket.on('send_new_message', data => {
-            chat.addNewMessage(data.username, data.message);
+            console.log(data);
+            chat.addNewMessage(data.username, data.message.substring(0, 64));
+
+            let lastMsg = chat.getLatestMessage();
+            console.log(lastMsg);
 
             socket.broadcast.emit('receive_new_message', {
-                message: chat.getLatestMessage()
+                    username: lastMsg.username,
+                    message: lastMsg.message,
+                    timestamp: lastMsg.timestamp
             });
-        })
+        });
     });
 
     const tetrisIO = io.of('/tetris');
