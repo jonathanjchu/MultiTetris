@@ -7,7 +7,8 @@ class Lobby extends Component {
     super(props);
     
     this.state = {
-        endpoint: "192.168.1.81:54810",
+        // endpoint: "192.168.1.81:54810/lobby",
+        endpoint: "localhost:54810/lobby",
         socket: null,
         users: [],
         countDown: 5,

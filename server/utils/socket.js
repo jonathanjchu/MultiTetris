@@ -175,7 +175,7 @@ function getGameState() {
 
     for (let key in players) {
         // console.log(key);
-        if (players.hasOwnProperty(key) && players[key].username.length > 0) {
+        if (players.hasOwnProperty(key) && players[key].username.length > 0 && players[key].tetris) {
             // console.log(players[key]);
             gameState[key] = {
                 username: players[key].username,

@@ -9,7 +9,8 @@ class ChatRoom extends Component {
     super(props);
 
     this.state = {
-      endpoint: "192.168.1.81:54810/chat",
+      // endpoint: "192.168.1.81:54810/chat",
+      endpoint: "localhost:54810/chat",
       socket: null,
       messages: [],
       username: this.props.username
@@ -65,12 +66,21 @@ class ChatRoom extends Component {
   }
 
   render() {
+
     return (
       <>
         <div id="chatroom">
           {
             this.state.messages.map((msg, i) => 
-              <ChatItem username={msg.username} message={msg.message} key={i} />
+            <>
+            {
+              msg.username === this.state.username ?
+              <ChatItem key={i} username={msg.username} message={msg.message} isMyUsername={true} />
+              :
+              <ChatItem key={i} username={msg.username} message={msg.message} isMyUsername={false} />
+            }
+            </>
+              
             )
           }
         </div>

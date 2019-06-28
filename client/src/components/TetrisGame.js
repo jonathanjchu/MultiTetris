@@ -14,7 +14,8 @@ class TetrisGame extends Component {
     super(props);
 
     this.state = {
-      endpoint: "192.168.1.81:54810/tetris",
+      // endpoint: "192.168.1.81:54810/tetris",
+      endpoint: "localhost:54810/tetris",
       id: this.props.match.params.id,
       socket: null,
 
@@ -24,15 +25,15 @@ class TetrisGame extends Component {
       messages: [],
 
       colorKey: [
-                  "blank",
-                  "blue",
-                  "purple",
-                  "green",
-                  "orange",
-                  "red",
-                  "yellow",
-                  "gray"
-                ]
+        "blank",
+        "blue",
+        "purple",
+        "green",
+        "orange",
+        "red",
+        "yellow",
+        "gray"
+      ]
     };
   }
 
@@ -99,16 +100,26 @@ class TetrisGame extends Component {
           this.state.gameState ?
             <div id="game">
               <h2>{this.state.gameState[this.state.id].username}</h2>
-              <div id="chat_bar">
-                <ChatRoom username={this.state.gameState[this.state.id].username} />
+              <div id="left_bar">
+                <div id="chat_bar">
+                  <ChatRoom username={this.state.gameState[this.state.id].username} />
+                </div>
+                <div id="instructions">
+                  <p><b><u>How to play</u></b></p>
+                  <p><b>Rotate:</b> Up</p>
+                  <p><b>Move:</b> Left, Right, Down</p>
+                  <p><b>Drop:</b> Space</p>
+                  <br />
+                  <p>Clearing 2 or more lines will give junk lines to your opponents</p>
+                </div>
               </div>
               <TetrisBoard board={this.state.gameState[this.state.id].board} colorKey={this.state.colorKey} />
-              <div id="side_bar">
-                <NextPiece shape={this.state.gameState[this.state.id].nextShape} colorKey={this.state.colorKey}  />
+              <div id="right_bar">
+                <NextPiece shape={this.state.gameState[this.state.id].nextShape} colorKey={this.state.colorKey} />
                 <ScoreBox lines={this.state.gameState[this.state.id].linesRemoved} />
                 {
                   opponents.map((opp, i) =>
-                    <TetrisBoardMini key={i} board={opp.board} username={opp.username} colorKey={this.state.colorKey}  />
+                    <TetrisBoardMini key={i} board={opp.board} username={opp.username} colorKey={this.state.colorKey} />
                   )
                 }
               </div>

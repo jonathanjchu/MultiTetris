@@ -3,8 +3,15 @@ import '../../App.css';
 
 class ChatItem extends Component {
   render() {
+
+    let chatClassName = "chat_row";
+
+    if (this.props.isMyUsername) {
+      chatClassName += " chat_highlight";
+    }
+
     return (
-      <div className="chat_row">
+      <div className={chatClassName}>
         <span className="chat_user">
           {this.props.username}: 
         </span>

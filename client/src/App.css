@@ -8,7 +8,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #242429;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -60,8 +60,14 @@ input[type=text] {
   display: inline-block;
   width: 1000px;
   position: fixed;
-  top: 100px;
+  top: 30px;
   left: 40px;
+}
+
+#game h2 {
+  text-align: center;
+  font: italic bold 56px 'Segoe Print', verdana, arial, sans-serif;
+  color: palegoldenrod;
 }
 
 #main_board {
@@ -89,11 +95,12 @@ input[type=text] {
   border: 3px solid goldenrod;
   color: goldenrod;
   padding: 24px;
-  top: 40%;
-  left: 40%;
+  top: 30%;
+  left: 30%;
+  font: normal 40px 'Courier New', Courier, monospace
 }
 
-#side_bar {
+#right_bar {
   display: inline-block;
   vertical-align: top;
   margin: 12px;
@@ -105,6 +112,13 @@ input[type=text] {
   height: 100px;
   width: 180px;
   border: 1px solid #fff;
+  margin: 3px;
+  box-sizing: border-box;
+  padding: 12px;
+}
+
+#score_box h3 {
+  font: normal 24px 'Segoe UI', arial, sans-serif;
 }
 
 #next_piece {
@@ -114,6 +128,7 @@ input[type=text] {
   text-align: center;
   padding: 6px;
   box-sizing: border-box;
+  margin: 3px;
 }
 
 #next_piece .box {
@@ -127,11 +142,12 @@ input[type=text] {
 
 .mini_board {
   height: 160px;
-  border: 1px solid #fff;
+  /* border: 1px solid #fff; */
   margin: 3px;
   display: inline-block;
   text-align: center;
   width: 66px;
+  box-sizing: border-box;
 }
 
 .mini_board .row {
@@ -147,6 +163,10 @@ input[type=text] {
 .mini_board h5 {
   font-weight: 100;
   font-size: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 60px;
 }
 
 .blank {
@@ -182,17 +202,37 @@ input[type=text] {
   background-color: silver !important;
 }
 
+#left_bar {
+  display: inline-block;
+  display: inline-block;
+  vertical-align: top;
+  margin: 12px;
+  width: 260px;
+}
+
+#instructions {
+  font: normal 14px 'Segoe UI', arial, sans-serif;
+  margin: 12px;
+}
+
 #chat_bar {
   width: 260px;
   display: inline-block;
   vertical-align: top;
-  margin: 12px;
+  /* margin: 12px; */
   overflow: auto;
+  background-color: #494e57;
+  box-sizing: border-box;
+  padding: 3px;
 }
 
 #chatroom {
   overflow: auto;
   height: 400px;
+}
+
+.chat_highlight {
+  color: lightblue;
 }
 
 .chat_row {
