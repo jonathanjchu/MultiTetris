@@ -2,28 +2,14 @@ const Tetris = require('./tetris');
 
 class MultiTetris {
     constructor() {
-        this.players = {};
+        this.players = {}; // { id: Tetris }
         this.gameLoopTimer = null;
         this.loopInterval = 800;
-
-        this.lobby = {};
     }
 
-    addPlayer(id, username) {
-        if (!this.doesUserNameExist(username)) {
-            this.lobby[id] = username;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    startGame() {
-        for (let key in this.lobby) {
-            if (this.lobby.hasOwnProperty(key)) {
-                this.players[key] = new Tetris(this.lobby[key]);
-            }
+    startGame(players) {
+        for (let i=0; i<players.length; i++) {
+            this.players[players[i].id] = new Tetris(players[i].id, players[i].username);
         }
     }
 
@@ -36,21 +22,26 @@ class MultiTetris {
     }
 
     keyPress(id, keyCode) {
-        this.players[id].keyPress(keyCode);
+        let linesRemoved = this.players[id].handleKeyPress(keyCode);
+     
+        if (linesRemoved > 1) {
+            this.addGarbageLines(data.id, linesRemoved-1);
+        }
+
+    }
+
+    addGarbageLines(id, numLines) {
+        for (let key in this.players) {
+            if (this.players.hasOwnProperty(key) && key !== id) {
+                this.players[key].addGarbageLines(numLines);
+            }
+        }
     }
 
     removePlayer(id) {
-        delete this.players[id];
-    }
-
-    doesUserNameExist(username) {
-        for (let key in this.lobby) {
-            if (this.lobby.hasOwnProperty(key)) {
-                if (this.lobby[key] === username)
-                    return true;
-            }
+        if (id in this.players) {
+            delete this.players[id];
         }
-        return false;
     }
 
     getAllBoards() {

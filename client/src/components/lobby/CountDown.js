@@ -34,7 +34,7 @@ class CountDown extends Component {
     return (
       <div className="countdown">
         <h1>
-          Starting in {this.state.timeRemaining}...
+          Starting in {this.state.timeRemaining}
           </h1>
       </div>
     );

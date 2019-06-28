@@ -1,13 +1,13 @@
 const socketio = require('socket.io');
 const ChatRoom = require('../classes/chatroom');
-const Tetris = require('../classes/tetris');
+// const Tetris = require('../classes/tetris');
 const Lobby = require('../classes/lobby');
-// const MultiTetris = require('../classes/multitetris');
+const MultiTetris = require('../classes/multitetris');
 
 var chat = new ChatRoom();
 var lobby = new Lobby();
 var gameLoopTick = 800;
-var players = {};
+// var players = {};
 /*
 key: socket.id
 {
@@ -20,7 +20,7 @@ key: socket.id
 module.exports = function (server) {
     const io = socketio(server);
 
-    // var tetrisGame = new MultiTetris();
+    var tetrisGame = new MultiTetris();
 
     const usernameIO = io.of('/usernames');
     usernameIO.on('connection', socket => {
@@ -131,6 +131,9 @@ module.exports = function (server) {
                             gameLoop: null
                         };
                     }
+                    
+                    tetrisGame.startGame(lobby.getAllPlayers());
+
                 }, 5000);
             }
         });
@@ -143,6 +146,9 @@ module.exports = function (server) {
 
         socket.on('start_game', data => {
             console.log(data.id);
+
+            
+
             if (data.id in players) {
 
                 players[data.id].tetris = new Tetris();
@@ -179,6 +185,7 @@ module.exports = function (server) {
         });
 
         socket.on('key_press', data => {
+            tetrisGame.keyPress(data.id);
             if (data.id in players) {
                 if (players[data.id].tetris) {
                     let linesRemoved = players[data.id].tetris.handleKeyPress(data.keyCode);
@@ -200,9 +207,7 @@ module.exports = function (server) {
             let id = parseID(socket.id);
             console.log(id + " disconnected");
 
-            if (id in players) {
-                delete players[id];
-            }
+            tetrisGame.removePlayer(id);
         });
 
     });
