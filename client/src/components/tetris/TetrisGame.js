@@ -15,7 +15,7 @@ class TetrisGame extends Component {
 
     this.state = {
       // endpoint: "192.168.1.81:54810/tetris",
-      endpoint: "172.31.39.165:54810/tetris",
+      endpoint: "18.222.83.43:54810/tetris",
       // endpoint: "192.168.1.164:54810/tetris",
       // endpoint: "localhost:54810/tetris",
       id: this.props.match.params.id,

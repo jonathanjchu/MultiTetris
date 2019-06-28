@@ -12,7 +12,7 @@ class Lobby extends Component {
 
     this.state = {
       // endpoint: "192.168.1.81:54810/lobby",
-      endpoint: "172.31.39.165:54810/lobby",
+      endpoint: "18.222.83.43:54810/lobby",
       // endpoint: "192.168.1.164:54810/lobby",
       // endpoint: "localhost:54810/lobby",
       socket: null,
