@@ -15,9 +15,9 @@ class TetrisGame extends Component {
 
     this.state = {
       // endpoint: "192.168.1.81:54810/tetris",
-      endpoint: "18.222.83.43:54810/tetris",
+      // endpoint: "18.222.83.43:54810/tetris",
       // endpoint: "192.168.1.164:54810/tetris",
-      // endpoint: "localhost:54810/tetris",
+      endpoint: "localhost:54810/tetris",
       id: this.props.match.params.id,
       socket: null,
 
@@ -54,7 +54,7 @@ class TetrisGame extends Component {
   }
 
   startGame = (socket) => {
-    socket.emit('start_game', {
+    socket.emit('confirm_in_game', {
       id: this.state.id
     });
 

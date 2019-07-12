@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import '../../App.css';
 import SocketIOClient from 'socket.io-client';
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import ChatRoom from '../chat/ChatRoom';
 import UserItem from './UserItem';
 import CountDown from './CountDown';
@@ -12,9 +12,9 @@ class Lobby extends Component {
 
     this.state = {
       // endpoint: "192.168.1.81:54810/lobby",
-      endpoint: "18.222.83.43:54810/lobby",
+      // endpoint: "18.222.83.43:54810/lobby",
       // endpoint: "192.168.1.164:54810/lobby",
-      // endpoint: "localhost:54810/lobby",
+      endpoint: "localhost:54810/lobby",
       socket: null,
       id: this.props.match.params.id,
       username: "",
@@ -69,19 +69,24 @@ class Lobby extends Component {
       this.findUserAndSetToReady(data.username);
     });
 
-    this.setState({
-      socket: socket
-    });
-
     socket.on('lobby_countdown', data => {
       this.setState({
         isStarting: true,
         countDown: data.countDown
       });
     });
+
+    this.setState({
+      socket: socket
+    });
   }
 
   componentWillUnmount() {
+    this.state.socket.emit('player_left_lobby', {
+      username: this.state.username,
+      id: this.state.id
+    });
+
     this.state.socket.off();
     this.state.socket.disconnect();
   }
@@ -119,6 +124,7 @@ class Lobby extends Component {
   render() {
     return (
       <div id="game">
+        <Link to="/" className="nav">Quit</Link>
         <h2>Tetris</h2>
         <div id="left_bar">
           <div id="chat_bar">

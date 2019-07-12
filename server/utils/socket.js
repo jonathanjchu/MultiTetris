@@ -1,37 +1,30 @@
 const socketio = require('socket.io');
 const ChatRoom = require('../classes/chatroom');
-// const Tetris = require('../classes/tetris');
 const Lobby = require('../classes/lobby');
 const MultiTetris = require('../classes/multitetris');
 
 var chat = new ChatRoom();
 var lobby = new Lobby();
+var lobbyTimer = null;
 var gameLoopTick = 800;
-// var players = {};
-/*
-key: socket.id
-{
-    username:
-    tetris: 
-    gameLoop:
-}
-*/
+var tetrisGame = new MultiTetris();
+
+var gameTimers = {};
+// key: id; value: Timer
+
 
 module.exports = function (server) {
     const io = socketio(server);
-
-    var tetrisGame = new MultiTetris();
 
     const usernameIO = io.of('/usernames');
     usernameIO.on('connection', socket => {
         socket.on('set_username', data => {
 
-            if (lobby.isCountingDown || gameStillGoingOn()) {
+            if (lobby.isCountingDown || tetrisGame.isGameStillGoingOn()) {
                 socket.emit('user_too_late');
             }
             else {
-                if (!isUserExist(data.username)) {
-                    // console.log(data.username);
+                if (!lobby.doesUserNameExist(data.username)) {
 
                     let id = socket.id.substring(socket.id.indexOf('#') + 1);
                     console.log(id);
@@ -122,87 +115,83 @@ module.exports = function (server) {
                     countDown: 5
                 });
 
-                setTimeout(() => {
-                    for (let i=0; i<lobby.waitingPlayers.length; i++) {
-                        players[lobby.waitingPlayers[i].id] = {
-                            username: lobby.waitingPlayers[i].username,
-                            tetris: null,
-                            gameLoop: null
-                        };
-                    }
-                    
-                    tetrisGame.startGame(lobby.getAllPlayers());
+                // timer before starting game; wait 5 seconds (actually 4.9 sec) and then start game
+                setTimeout(() => {                    
+                    // start game for everyone now that 5 sec countdown is finished
+                    tetrisGame.addPlayers(lobby.getAllPlayers());
+
+                    // create new lobby
+                    lobby.destroy();
                     lobby = new Lobby();
+
                 }, 4900);
             }
         });
+
+        lobbyTimer = setInterval(() => {
+            console.log("timeout tick");
+
+            let removedPlayers = lobby.checkIfPlayersTimedOut();
+            if (removedPlayers.length > 0)
+            {
+                removedPlayers.forEach(p => {
+                    console.log("removed player " + p);
+                    socket.broadcast.emit('player_left', {
+                        quitter: p,
+                    });
+                });
+            }
+        }, 30000);
     });
+
+
+
 
     const tetrisIO = io.of('/tetris');
     tetrisIO.on('connection', (socket) => {
         let id = parseID(socket.id);
-        console.log(id + " connected");
+        console.log(id + " connected to tetris");
+        
 
-        socket.on('start_game', data => {
+        socket.on('confirm_in_game', data => {
             console.log(data.id);
 
-            
+            // start game loop for this player (who just connected)
+            gameTimers[data.id] =
+                    setInterval(() => {
+                        tetrisGame.playerLoop(data.id);
 
-            if (data.id in players) {
-
-                players[data.id].tetris = new Tetris();
-
-                players[data.id].gameLoop = setInterval(() => {
-
-                    // console.log(players);
-
-                    if (players[data.id]) {
-                        if (players[data.id].tetris.isGameOver) {
+                        if (tetrisGame.isGameOverForPlayer(data.id)) {
+                            // game over for player
                             socket.emit('game_over', { isGameOver: true });
-                            clearInterval(players[data.id].gameLoop);
+                            clearInterval(gameTimers[data.id]);
                         }
                         else {
-                            let linesRemoved = players[data.id].tetris.gameLoop();
+                            // update game information
 
-                            if (linesRemoved > 1) {
-                                addGarbageLines(data.id, linesRemoved);
-                            }
-
-                            let gameState = getGameState();
+                            let gameState = tetrisGame.getGameState();
 
                             socket.emit('game_state', {
                                 gameState: gameState,
                                 id: data.id
                             });
                         }
-                    }
 
-                }, gameLoopTick);
-            }
+                    }, gameLoopTick);
+
         });
 
         socket.on('key_press', data => {
-            tetrisGame.keyPress(data.id);
-            if (data.id in players) {
-                if (players[data.id].tetris) {
-                    let linesRemoved = players[data.id].tetris.handleKeyPress(data.keyCode);
+            tetrisGame.keyPress(data.id, data.keyCode);
 
-                    if (linesRemoved > 1) {
-                        addGarbageLines(data.id, linesRemoved);
-                    }
-
-                    let gameState = getGameState();
-
-                    socket.emit('game_state', {
-                        gameState: gameState
-                    });
-                }
-            }
+            socket.emit('game_state', {
+                gameState: tetrisGame.getGameState(),
+                id: data.id
+            });
         });
 
         socket.on('leave_game', data => { 
             let id = data.id;
-
             tetrisGame.removePlayer(id);
         });
 
@@ -214,67 +203,6 @@ module.exports = function (server) {
     });
 }
 
-function addGarbageLines(id, linesRemoved) {
-    let numLines = 0;
-    if (linesRemoved === 4) {
-        numLines = 4;
-    }
-    else {
-        numLines = linesRemoved - 1;
-    }
-
-    for (let key in players) {
-        if (players.hasOwnProperty(key) && key !== id) {
-            players[key].tetris.addGarbageLines(numLines);
-        }
-    }
-}
-
-function isUserExist(username) {
-    for (let key in players) {
-        if (players.hasOwnProperty(key)) {
-            if (players[key].username === username)
-                return true;
-        }
-    }
-    return false;
-}
-
-function getGameState() {
-    let gameState = {};
-
-    for (let key in players) {
-        // console.log(key);
-        if (players.hasOwnProperty(key) && players[key].username.length > 0 && players[key].tetris) {
-            // console.log(players[key]);
-            gameState[key] = {
-                username: players[key].username,
-                board: players[key].tetris.getBoardAndTetromino(),
-                linesRemoved: players[key].tetris.linesRemoved,
-                nextShape: players[key].tetris.getNextTetromino()
-            };
-        }
-    }
-
-    return gameState;
-}
-
 function parseID(socketid) {
     return socketid.substring(socketid.indexOf('#') + 1);
-}
-
-function gameStillGoingOn() {
-    let numActivePlayers = 0;
-
-    for (let key in players) {
-        if (players.hasOwnProperty(key) && !players[key].tetris.isGameOver) {
-            numActivePlayers++;
-
-            if (numActivePlayers > 1) {
-                return true;
-            }
-        }
-    }
-
-    return false;
 }

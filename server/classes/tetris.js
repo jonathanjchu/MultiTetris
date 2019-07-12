@@ -33,6 +33,7 @@ class Tetris {
         this.isWinner = false;
         this.linesRemoved = 0;
         this.score = 0;
+        this.socket = null;
     }
 
     getBoardState() {
@@ -65,10 +66,6 @@ class Tetris {
         return this.nextTetromino.getShape();
     }
 
-    // isGameOver() {
-    //     return this.isGameOver;
-    // }
-
     loadNextTetromino() {
         let temp = this.getBoardAndTetromino()
         this.grid = [...temp];
@@ -78,7 +75,6 @@ class Tetris {
     }
 
     rotateTetromino() {
-
         this.currentTetromino.rotate();
         let shape = this.currentTetromino.getShape();
         let x = this.currentTetromino.getX();
@@ -178,9 +174,6 @@ class Tetris {
             case 32:    // SPACE
                 this.dropTetromino();
                 break;
-
-            // case 17:    // LEFT CONTROL
-            //     break;
         }
 
         return this.keyPressChecks();
@@ -290,7 +283,7 @@ class Tetris {
         }
 
         if (lineCount > 0) {
-            console.log(`Removed ${lineCount} line(s)`);
+            console.log(`${this.id} removed ${lineCount} line(s)`);
         }
 
         return lineCount;
